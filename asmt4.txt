@@ -1,0 +1,104 @@
+CMPU-365, Spring 2023
+
+Asmt. 4  --  Due:  Thursday, April 6 @ Noon
+
+Implementing the MCTS algorithm for an intelligent Othello Player
+
+  =========================================================================
+    For this assignment, you may work in pairs.
+    Only one printout needs to be turned in for each pair.
+  =========================================================================
+
+You are given the following files which you should NOT change:
+
+  basic-defns.lisp
+  othello-macros.lisp
+  othello-starter.lisp
+  othello-the-rest.lisp
+
+The "othello" files implement the game of Othello.  The "othello-macros.lisp"
+file defines some low-level macros that are used in the other two "othello"
+files.  (A "macro" is used like a function, but it has a different underlying
+semantics.)
+
+You are given the following file that contains contracts for the functions
+you will need to define for your implementation of the MCTS algorithm:
+
+  mcts.lisp
+
+For comparison and general amusement, you are also given the following file,
+which contains my implementation of the MCTS algorithm in compiled form:
+
+  huns-mcts.fasl
+
+
+--------------------------------------------
+  TO BEGIN 
+--------------------------------------------
+
+Type:  (load "basic-defns.lisp")
+
+To compile-and-load your (currently partial) implementation, type:  (maker)
+
+(Ignore any warnings about variables not being used ... these warnings arise
+because you haven't provided definitions for a lot of functions yet!)
+
+To compile-and-load the implementation we saw in class, type:  (huns-maker)
+
+(If you compile-and-load one version and then the other, you'll see a lot
+of warnings about various functions/methods/operators being redefined.  You
+can ignore them.)
+
+TO PLAY A GAME:  
+
+  (setf g (new-othello))
+
+  (do-move! g nil 2 4)  ;; <--- Put a token in position (2 4)
+
+  (uct-search g 1000 2) ;; <--- Ask system to compute a move using
+                        ;;      1000 simulations and c = 2
+
+  (apply #'do-move! g nil (uct-search g 1000 2))
+       ;; same as above except here you also DO the move!
+
+AFTER YOU HAVE DEFINED YOUR MCTS FUNCTIONS (or if you want to see my
+MCTS functions in action), type:
+
+  (compete 1000 2 100 2)
+
+That will play out a game where black gets 1000 simulations per turn,
+while white only gets 100; both players are using a "C" value of 2.
+Black should win convincingly.
+
+   **** NOTE:  The current implementation scores a win by
+               the square-root of the difference in numbers of tokens.
+	       For example, if black wins having 48 tokens to 16 for white,
+	       then the score would be (sqrt (- 48 32)) = (sqrt 16) = 4.
+	       For this reason, using a C value of 6 would probably be
+	       more appropriate than 2 (which would be fine if wins/losses
+	       were counted as 1 or -1).
+	       
+The COMPETE-NO-PRINTING function is similar, except that it only displays
+the end result of the competition.  (It also displays a sequence of the
+form "B W B W ..." to let you know who's thinking along the way.)
+
+----------------------------------------------------
+  To TEST your implementation
+----------------------------------------------------
+
+In a fresh interactions window session, type the following expressions:
+
+(load "basic-defns.lisp")
+(maker)
+(dotimes (i 3)
+  (compete-no-printing 100 2 1000 2))  ;; be sure to use COMPETE-NO-PRINTING!!!!
+(dotimes (i 3)
+  (compete-no-printing 1000 2 1000 1))
+
+After that, run similar tests for at least 2 more combinations of inputs
+to COMPETE-NO-PRINTING.
+
+Then save your interactions and submit your asmt4 directory as usual:
+
+  submit365 asmt4 your-asmt-4-directory
+
